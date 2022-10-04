@@ -15,12 +15,19 @@ const Navbar = () => {
           <span>New & Popular</span>
           <span>My List</span>
         </div>
+
         <div className="right">
           <Search className="icon" />
           <span>KID</span>
           <Notifications className="icon" />
           <img src={profile} alt="Profile" />
-          <ArrowDropDown className="icon" />
+          <div className="profile">
+            <ArrowDropDown className="icon" />
+            <div className="options">
+              <span>Settings</span>
+              <span>Logout</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
