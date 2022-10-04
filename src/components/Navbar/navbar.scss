@@ -1,6 +1,10 @@
 .navbar {
+  width: 100%;
   color: white;
   font-style: 14px;
+  position: fixed;
+  top: 0;
+  z-index: 999;
 
   .container {
     padding: 0 50px;
