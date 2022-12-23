@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/User');
 const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -41,9 +42,18 @@ router.post('/login', async (req, res) => {
     originalPassword !== req.body.password &&
       res.status(401).json('Wrong password or username!');
 
+    // Creating JWT & basically it will hide this info inside the token
+    const accessToken = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET_TOKEN_KEY,
+      {
+        expiresIn: process.env.JWT_EXPIRY,
+      }
+    );
+
     // Take all fields except password
     const { password, ...info } = user._doc;
-    res.status(200).json(info);
+    res.status(200).json({ ...info, accessToken });
   } catch (err) {
     res.status(500).json(err);
   }
