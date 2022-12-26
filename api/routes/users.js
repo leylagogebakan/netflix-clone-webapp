@@ -76,6 +76,47 @@ router.get('/', verify, async (req, res) => {
   }
 });
 
-// Get user stats
+// Get user stats like give the month when created and total no of records in that month
+router.get('/stats', async (req, res) => {
+  const today = new Date();
+  const lastYear = today.setFullYear(today.setFullYear() - 1);
+  // console.log(lastYear);
+
+  const monthsArray = [
+    'Janauary',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  try {
+    const data = await User.aggregate([
+      {
+        $project: {
+          // like for Janauary it will give 1 and for February it give 2
+          month: { $month: '$createdAt' },
+        },
+      },
+      {
+        $group: {
+          // So it will give the month number & total records in db
+          _id: '$month',
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 
 module.exports = router;
