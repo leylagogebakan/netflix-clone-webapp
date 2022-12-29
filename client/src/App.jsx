@@ -1,6 +1,6 @@
 import './app.scss';
-// import Login from './pages/Login/Login';
-// import Register from './pages/Register/Register';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 import Home from './pages/Home/Home';
 import Watch from './pages/Watch/Watch';
 import {
@@ -11,21 +11,30 @@ import {
 } from 'react-router-dom';
 
 const App = () => {
+  const user = true;
   return (
     <Router>
       <Switch>
         <Route exact path="/">
-          <Home />
+          {user ? <Home /> : <Redirect to="/register" />}
         </Route>
-        <Route path="/movies">
-          <Home type="movies" />
+        <Route path="/register">
+          {!user ? <Register /> : <Redirect to="/" />}
         </Route>
-        <Route path="/series">
-          <Home type="series" />
-        </Route>
-        <Route path="/watch">
-          <Watch />
-        </Route>
+        <Route path="/login">{!user ? <Login /> : <Redirect to="/" />}</Route>
+        {user && (
+          <>
+            <Route path="/movies">
+              <Home type="movie" />
+            </Route>
+            <Route path="/series">
+              <Home type="series" />
+            </Route>
+            <Route path="/watch">
+              <Watch />
+            </Route>
+          </>
+        )}
       </Switch>
     </Router>
   );
