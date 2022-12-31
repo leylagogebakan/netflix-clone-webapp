@@ -1,17 +1,32 @@
 import './listItem.scss';
-import Card from '../../assets/card.jpg';
 import {
   Add,
   PlayArrow,
   ThumbDownAltOutlined,
   ThumbDownOutlined,
 } from '@material-ui/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-export default function ListItem({ index }) {
+export default function ListItem({ index, item }) {
   const [isHovered, setIsHovered] = useState(false);
-  const trailer =
-    'https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c0fd273d2c6d9a064f3ae35579b2bbdf&profile_id=139&oauth2_token_id=57447761';
+  const [movie, setMovie] = useState({});
+
+  useEffect(() => {
+    const getMovie = async () => {
+      try {
+        const res = await axios.get('/movies/find/' + item, {
+          headers: {
+            token: 'Bearer token',
+          },
+        });
+        setMovie(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMovie();
+  }, [item]);
 
   return (
     <div
@@ -20,10 +35,10 @@ export default function ListItem({ index }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <img src={Card} alt="card" />
+      <img src={movie.img} alt="card" />
       {isHovered && (
         <>
-          <video src={trailer} autoPlay={true} loop />
+          <video src={movie.trailer} autoPlay={true} loop />
           <div className="itemInfo">
             <div className="icons">
               <PlayArrow className="icon" />
@@ -32,15 +47,12 @@ export default function ListItem({ index }) {
               <ThumbDownOutlined className="icon" />
             </div>
             <div className="itemInfoTop">
-              <span>1 hour 14 mins</span>
-              <span className="limit">+16</span>
-              <span>2000</span>
+              <span>{movie.duration}</span>
+              <span className="limit">+{movie.limit}</span>
+              <span>{movie.year}</span>
             </div>
-            <div className="desc">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Praesentium hic rem eveniet error possimus, neque ex doloribus.
-            </div>
-            <div className="genre">Action</div>
+            <div className="desc">{movie.desc}</div>
+            <div className="genre">{movie.genre}</div>
           </div>
         </>
       )}
