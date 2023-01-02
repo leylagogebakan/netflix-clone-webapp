@@ -1,9 +1,29 @@
 import './featured.scss';
 import profile from '../../assets/profile.webp';
 import title from '../../assets/title.webp';
+import { useState, useEffect } from 'react';
 import { InfoOutlined, PlayArrow } from '@material-ui/icons';
+import axios from 'axios';
 
 export default function Featured({ type }) {
+  const [content, setContent] = useState({});
+
+  useEffect(() => {
+    const getRandomContent = async () => {
+      try {
+        const res = await axios.get(`/movies/random?type=${type}`, {
+          headers: {
+            token: 'Bearer token',
+          },
+        });
+        setContent(res.data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getRandomContent();
+  }, [type]);
+
   return (
     <div className="featured">
       {type && (
@@ -27,15 +47,10 @@ export default function Featured({ type }) {
           </select>
         </div>
       )}
-      <img src={profile} alt="Profile" />
+      <img src={content.img} alt="Profile" />
       <div className="info">
-        <img src={title} alt="" />
-        <span className="desc">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae
-          adipisci repellendus eum quasi illo, velit numquam, maxime tempora
-          sint deleniti, aliquid qui? Facilis, adipisci! Ratione hic repudiandae
-          temporibus eum earum?
-        </span>
+        <img src={content.imgTitle} alt="" />
+        <span className="desc">{content.desc}</span>
         <div className="buttons">
           <button className="play">
             <PlayArrow />
