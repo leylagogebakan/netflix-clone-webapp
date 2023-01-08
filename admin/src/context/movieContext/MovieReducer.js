@@ -23,6 +23,27 @@ const MovieReducer = (state, action) => {
         error: true,
       };
 
+    case 'DELETE_MOVIE_START':
+      return {
+        ...state,
+        isFethcing: true,
+        error: false,
+      };
+
+    case 'DELETE_MOVIE_SUCCESS':
+      return {
+        movies: state.movies.filter((movie) => movie._id !== action.payload),
+        isFethcing: false,
+        error: false,
+      };
+
+    case 'DELETE_MOVIE_FAILURE':
+      return {
+        ...state,
+        isFethcing: false,
+        error: true,
+      };
+
     default:
       return { ...state };
   }
