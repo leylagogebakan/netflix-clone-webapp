@@ -1,12 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import storage from '../../firebase';
-import {
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import './newProduct.css';
+import { createMovie } from '../../context/movieContext/apiCalls';
+import { MovieContext } from '../../context/movieContext/MovieContext';
 
 export default function NewProduct() {
   const [movie, setMovie] = useState(null);
@@ -17,6 +14,8 @@ export default function NewProduct() {
   const [video, setVideo] = useState(null);
   const [uploaded, setUploaded] = useState(0);
 
+  const { dispatch } = useContext(MovieContext);
+
   const handleChange = (e) => {
     const value = e.target.value;
     setMovie({ ...movie, [e.target.name]: value });
@@ -25,12 +24,8 @@ export default function NewProduct() {
   const upload = (items) => {
     items.forEach((item) => {
       const fileName = new Date().getTime() + item.label + item.file.name;
-      let storageRef = ref(storage, `/items/${fileName}`);
-      uploadBytes(storageRef, item).then((snapshot) => {
-        console.log('Uploaded a blob or file!');
-      });
-
-      const uploadTask = uploadBytesResumable(storageRef, item);
+      const storageRef = ref(storage, `/items/${fileName}`);
+      const uploadTask = uploadBytesResumable(storageRef, item.file);
       uploadTask.on(
         'state_changed',
         (snapshot) => {
@@ -62,12 +57,17 @@ export default function NewProduct() {
   const handleUpload = (e) => {
     e.preventDefault();
     upload([
-      { file: img, label: img },
-      { file: imgTitle, label: imgTitle },
-      { file: imgSm, label: imgSm },
-      { file: trailer, label: trailer },
-      { file: video, label: video },
+      { file: img, label: 'img' },
+      { file: imgTitle, label: 'imgTitle' },
+      { file: imgSm, label: 'imgSm' },
+      { file: trailer, label: 'trailer' },
+      { file: video, label: 'video' },
     ]);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createMovie(movie, dispatch);
   };
 
   return (
@@ -179,7 +179,9 @@ export default function NewProduct() {
           />
         </div>
         {uploaded === 5 ? (
-          <button className="addProductButton">Create</button>
+          <button className="addProductButton" onClick={handleSubmit}>
+            Create
+          </button>
         ) : (
           <button className="addProductButton" onClick={handleUpload}>
             Upload
