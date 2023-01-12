@@ -1,7 +1,6 @@
 import Chart from '../../components/chart/Chart';
 import FeaturedInfo from '../../components/featuredInfo/FeaturedInfo';
 import './home.css';
-import { userData } from '../../dummyData';
 import WidgetSm from '../../components/widgetSm/WidgetSm';
 import WidgetLg from '../../components/widgetLg/WidgetLg';
 import { useState, useEffect, useMemo } from 'react';
@@ -33,7 +32,8 @@ export default function Home() {
       try {
         const res = await axios.get('/users/stats', {
           headers: {
-            token: 'Bearer token',
+            token:
+              'Bearer ' + JSON.parse(localStorage.getItem('user')).accessToken,
           },
         });
         const statsList = res.data.sort(function (a, b) {
