@@ -20,8 +20,7 @@ const Home = ({ type }) => {
           }`,
           {
             headers: {
-              token:
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYWIyMzM2OThmMzg4NmJlOGMzMmU1ZSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY3MjQxNjcxNSwiZXhwIjoxNjcyODQ4NzE1fQ.fDEXYMQPkx_6FkRIMyOkIE5Mb5-Y_XH4SSQsnirg9jw',
+              token: 'Bearer token',
             },
           }
         );
@@ -37,7 +36,7 @@ const Home = ({ type }) => {
   return (
     <div className="home">
       <Navbar />
-      <Featured type={type} />
+      <Featured type={type} setGenre={setGenre} />
       {lists.map((list, i) => (
         <List key={i} list={list} />
       ))}
