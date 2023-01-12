@@ -3,6 +3,9 @@ import {
   getListsStart,
   getListsSuccess,
   getListsFailure,
+  createListStart,
+  createListSuccess,
+  createListFailure,
   deleteListStart,
   deleteListSuccess,
   deleteListFailure,
@@ -19,6 +22,20 @@ export const getLists = async (dispatch) => {
     dispatch(getListsSuccess(res.data));
   } catch (error) {
     dispatch(getListsFailure());
+  }
+};
+
+export const createList = async (list, dispatch) => {
+  dispatch(createListStart());
+  try {
+    const res = await axios.post('/lists', list, {
+      headers: {
+        token: 'Bearer ' + JSON.parse(localStorage.getItem('user')).accessToken,
+      },
+    });
+    dispatch(createListSuccess(res.data));
+  } catch (error) {
+    dispatch(createListFailure());
   }
 };
 
