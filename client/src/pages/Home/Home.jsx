@@ -20,7 +20,9 @@ const Home = ({ type }) => {
           }`,
           {
             headers: {
-              token: 'Bearer token',
+              token:
+                'Bearer ' +
+                JSON.parse(localStorage.getItem('user')).accessToken,
             },
           }
         );
